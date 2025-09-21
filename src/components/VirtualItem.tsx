@@ -1,5 +1,5 @@
 import React from 'react'
-import type { PhotoT } from '../api/picsum.ts'
+import { PAGE_SIZE, type PhotoT } from '../api/picsum.ts'
 
 interface VirtualItemProps {
   photo: PhotoT
@@ -13,7 +13,7 @@ export const VirtualItem: React.FC<VirtualItemProps> = ({ photo, globalIndex }) 
     <img
       src={photo.download_url}
       alt={`Photo by ${photo.author}`}
-      loading={globalIndex < 20 ? 'eager' : 'lazy'}
+      loading={globalIndex < PAGE_SIZE ? 'eager' : 'lazy'}
       className="photo-img"
     />
     <div className="photo-author">{photo.author}</div>
