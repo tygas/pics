@@ -51,7 +51,6 @@ export const usePhotoGallery = (): UsePhotoGalleryReturn => {
     [loadedPages]
   )
 
-  // Initialize with first pages
   useEffect(() => {
     const initializePages = async () => {
       await loadPage(1, 'append')
@@ -60,7 +59,6 @@ export const usePhotoGallery = (): UsePhotoGalleryReturn => {
     initializePages()
   }, [loadPage])
 
-  // Set up infinite scroll - moved to separate hook
   const handleLoadMore = useCallback(() => {
     if (loadedPages.size > 0) {
       const nextPage = Math.max(...Array.from(loadedPages)) + 1
@@ -80,7 +78,7 @@ export const usePhotoGallery = (): UsePhotoGalleryReturn => {
   useInfiniteScroll({
     onLoadMore: handleLoadMore,
     onLoadPrevious: handleLoadPrevious,
-    threshold: 100,
+    threshold: 200,
     isLoading,
     hasMore: true,
   })
