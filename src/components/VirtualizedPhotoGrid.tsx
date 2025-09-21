@@ -24,7 +24,7 @@ interface VirtualRow {
 const DEFAULT_CONTAINER_HEIGHT = 600
 const DEFAULT_LOAD_MORE_THRESHOLD = 800
 const DEFAULT_ITEMS_PER_ROW = 3
-const DEFAULT_ROW_HEIGHT = 300
+const DEFAULT_ROW_HEIGHT = 250
 const BUFFER_ROWS = 1
 
 export const VirtualizedPhotoGrid: React.FC<VirtualizedPhotoGridProps> = ({

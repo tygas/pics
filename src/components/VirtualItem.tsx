@@ -1,8 +1,8 @@
 import React from 'react'
-import type { Photo } from '../types/photo'
+import type { PhotoT } from '../api/picsum.ts'
 
 interface VirtualItemProps {
-  photo: Photo
+  photo: PhotoT
   globalIndex: number
   rowTotalWidth?: number
   isWideRow?: boolean

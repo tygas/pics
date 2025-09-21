@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { fetchPhotos, PAGE_SIZE } from '../api/picsum'
-import type { Photo } from '../types/photo'
+import { fetchPhotos, PAGE_SIZE, type PhotoT } from '../api/picsum'
 
 interface UseVirtualizedPhotoGalleryReturn {
-  photos: Photo[]
+  photos: PhotoT[]
   isLoading: boolean
   error: string | null
   handleLoadMore: () => void
@@ -12,7 +11,7 @@ interface UseVirtualizedPhotoGalleryReturn {
 }
 
 export const useVirtualizedPhotoGallery = (): UseVirtualizedPhotoGalleryReturn => {
-  const [photos, setPhotos] = useState<Photo[]>([])
+  const [photos, setPhotos] = useState<PhotoT[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loadedPages, setLoadedPages] = useState<Set<number>>(new Set())
