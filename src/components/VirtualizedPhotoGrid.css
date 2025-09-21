@@ -1,0 +1,158 @@
+/* Virtualized Gallery Styles */
+.virtualized-gallery {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.virtualized-gallery-wrapper {
+    width: 100%;
+    height: 100vh;
+}
+
+.scroll-container {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: #bbb transparent;
+}
+
+.scroll-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 4px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+.virtualized-photo-grid {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+}
+
+.virtual-container {
+    position: relative;
+    width: 100%;
+}
+
+.virtual-row {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 8px;
+    padding: 4px;
+    box-sizing: border-box;
+}
+
+
+.virtual-photo-card {
+    flex: 1 1 auto;
+    display: flex;
+    border: 1px solid #000;
+    flex-direction: column;
+
+}
+
+.virtual-photo-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.virtual-photo-card .photo-img {
+    width: 100%;
+    height: 200px; /* fixed row height */
+    object-fit: cover;
+
+}
+
+.virtual-photo-card .photo-author {
+    padding: 4px 12px;
+    font-size: 0.9rem;
+    color: #666;
+    background: #fafafa;
+    border-top: 1px solid #000;
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.loading-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.loading-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    color: #666;
+}
+
+.loading-spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.virtual-photo-card .photo-img.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+@media (max-width: 1200px) {
+    .virtualized-gallery {
+        --items-per-row: 3;
+    }
+}
+
+@media (max-width: 768px) {
+    .virtualized-gallery {
+        --items-per-row: 2;
+    }
+}
+
+@media (max-width: 480px) {
+    .virtualized-gallery {
+        --items-per-row: 1;
+    }
+}

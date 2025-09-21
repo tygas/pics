@@ -4,14 +4,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 300px;
+    height: 100vh;
     padding: 2rem;
     text-align: center;
 }
 
-.error-container h3 {
+.error-container h2 {
     color: #e74c3c;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .error-container p {
@@ -19,17 +19,25 @@
     margin-bottom: 1rem;
 }
 
-.retry-button {
+.error-container button {
     background: #3498db;
     color: white;
     border: none;
-    padding: 0.75rem 1.5rem;
+    padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 1rem;
-    transition: background-color 0.2s;
 }
 
-.retry-button:hover {
+.error-container button:hover {
     background: #2980b9;
+}
+
+.empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #666;
+    font-size: 1.1rem;
 }

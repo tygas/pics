@@ -1,8 +1,10 @@
 import './App.css'
-import Gallery from './components/Gallery.tsx'
+import { VirtualizedGallery } from './components/VirtualizedGallery'
+import Gallery from '../_ignore/Gallery.tsx'
 
 function App() {
-  return <Gallery />
+  return <VirtualizedGallery />
+  // return <Gallery />
 }
 
 export default App
