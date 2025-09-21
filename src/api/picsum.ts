@@ -15,7 +15,6 @@ export async function fetchPhotos(
   params: {
     page?: number
     limit?: number
-    [key: string]: any
   } = {}
 ): Promise<PhotoT[]> {
   const url = new URL(BASE_URL + LIST_ENDPOINT)
