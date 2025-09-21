@@ -31,16 +31,11 @@ export const useVirtualizedPhotoGallery = (): UseVirtualizedPhotoGalleryReturn =
       try {
         const newPhotos = await fetchPhotos({ page, limit: PAGE_SIZE })
 
-        setPhotos((prevPhotos) => {
-          if (direction === 'prepend') {
-            return [...newPhotos, ...prevPhotos]
-          }
-          return [...prevPhotos, ...newPhotos]
-        })
+        setPhotos((prevPhotos) =>
+          direction === 'prepend' ? [...newPhotos, ...prevPhotos] : [...prevPhotos, ...newPhotos]
+        )
 
         setLoadedPages((prev) => new Set([...prev, page]))
-
-        // Estimate total photos (this could be improved with actual API total count)
         setTotalPhotos((prev) => Math.max(prev, page * PAGE_SIZE))
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load photos')
@@ -52,7 +47,6 @@ export const useVirtualizedPhotoGallery = (): UseVirtualizedPhotoGalleryReturn =
     [loadedPages]
   )
 
-  // Initialize with first few pages
   useEffect(() => {
     const initializePages = async () => {
       await loadPage(1, 'append')

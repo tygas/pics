@@ -4,6 +4,8 @@ import type { Photo } from '../types/photo'
 interface VirtualItemProps {
   photo: Photo
   globalIndex: number
+  rowTotalWidth?: number
+  isWideRow?: boolean
 }
 
 export const VirtualItem: React.FC<VirtualItemProps> = ({ photo, globalIndex }) => (

@@ -5,13 +5,3 @@ export interface Photo {
   width: number
   height: number
 }
-
-export interface PageData {
-  pageNumber: number
-  photos: Photo[]
-  isLoaded: boolean
-}
-
-export interface VirtualizedPages {
-  [pageNumber: number]: Photo[]
-}

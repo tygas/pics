@@ -109,6 +109,7 @@ export const VirtualizedPhotoGrid: React.FC<VirtualizedPhotoGridProps> = ({
               left: 0,
               right: 0,
               height: rowHeight,
+              overflow: 'hidden',
             }}
           >
             {row.photos.map((photo, photoIndex) => (
