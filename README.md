@@ -1,5 +1,5 @@
 TODO:
-
+- scss 
 - tests
 - would be cool to have api with thumbs and even alpha color options, optimize loading
 
