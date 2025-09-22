@@ -29,7 +29,6 @@ export const useVirtualizedPhotoGallery = (): UseVirtualizedPhotoGalleryReturn =
 
       try {
         const newPhotos = await fetchPhotos({ page, limit: PAGE_SIZE })
-
         setPhotos((prevPhotos) =>
           direction === 'prepend' ? [...newPhotos, ...prevPhotos] : [...prevPhotos, ...newPhotos]
         )

@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react'
+import React from 'react'
 import { VirtualItem } from './VirtualItem'
 import { LoadingIndicator } from './LoadingIndicator'
 import './VirtualizedPhotoGrid.css'
-import type { PhotoT } from '../api/picsum.ts'
+import type { PhotoT } from '../api/picsum'
+import { useVirtualizedRows } from '../hooks/useVirtualizedRows'
 
 interface VirtualizedPhotoGridProps {
   photos: PhotoT[]
@@ -14,18 +15,9 @@ interface VirtualizedPhotoGridProps {
   rowHeight?: number
 }
 
-interface VirtualRow {
-  index: number
-  top: number
-  photos: PhotoT[]
-  startIndex: number
-}
-
-const DEFAULT_CONTAINER_HEIGHT = 600
 const DEFAULT_LOAD_MORE_THRESHOLD = 800
 const DEFAULT_ITEMS_PER_ROW = 3
 const DEFAULT_ROW_HEIGHT = 250
-const BUFFER_ROWS = 1
 
 export const VirtualizedPhotoGrid: React.FC<VirtualizedPhotoGridProps> = ({
   photos,
@@ -36,99 +28,15 @@ export const VirtualizedPhotoGrid: React.FC<VirtualizedPhotoGridProps> = ({
   itemsPerRow = DEFAULT_ITEMS_PER_ROW,
   rowHeight = DEFAULT_ROW_HEIGHT,
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [containerHeight, setContainerHeight] = useState(DEFAULT_CONTAINER_HEIGHT)
-  const [scrollTop, setScrollTop] = useState(0)
-  const [visibleRows, setVisibleRows] = useState<VirtualRow[]>([])
-
-  const totalRows = Math.ceil(photos.length / itemsPerRow)
-  const totalHeight = totalRows * rowHeight
-
-  const rows = useMemo(() => {
-    if (photos.length === 0) return []
-
-    const result: PhotoT[][] = []
-    for (let i = 0; i < photos.length; i += itemsPerRow) {
-      result.push(photos.slice(i, i + itemsPerRow))
-    }
-    return result
-  }, [photos, itemsPerRow])
-
-  const calculateVisibleRows = useCallback(() => {
-    if (totalRows === 0 || containerHeight === 0) {
-      setVisibleRows([])
-      return
-    }
-
-    const startRow = Math.floor(scrollTop / rowHeight)
-    const endRow = Math.min(totalRows - 1, Math.ceil((scrollTop + containerHeight) / rowHeight))
-
-    const bufferedStartRow = Math.max(0, startRow - BUFFER_ROWS)
-    const bufferedEndRow = Math.min(totalRows - 1, endRow + BUFFER_ROWS)
-
-    const newVisibleRows: VirtualRow[] = []
-    for (let i = bufferedStartRow; i <= bufferedEndRow; i++) {
-      const rowPhotos = rows[i]
-      if (rowPhotos) {
-        newVisibleRows.push({
-          index: i,
-          top: i * rowHeight,
-          photos: rowPhotos,
-          startIndex: i * itemsPerRow,
-        })
-      }
-    }
-
-    setVisibleRows(newVisibleRows)
-  }, [scrollTop, containerHeight, totalRows, rowHeight, rows, itemsPerRow])
-
-  useEffect(() => {
-    calculateVisibleRows()
-  }, [calculateVisibleRows])
-
-  const handleScroll = useCallback(
-    (event: React.UIEvent<HTMLDivElement>) => {
-      const target = event.currentTarget
-      const newScrollTop = target.scrollTop
-
-      if (newScrollTop === scrollTop) return
-
-      setScrollTop(newScrollTop)
-
-      const { scrollHeight, clientHeight } = target
-      const scrollFromBottom = scrollHeight - (newScrollTop + clientHeight)
-
-      if (scrollFromBottom <= loadMoreThreshold && !isLoading) {
-        onLoadMore()
-      }
-
-      if (newScrollTop <= loadMoreThreshold && !isLoading) {
-        onLoadPrevious()
-      }
-    },
-    [scrollTop, loadMoreThreshold, isLoading, onLoadMore, onLoadPrevious]
-  )
-
-  useEffect(() => {
-    const container = containerRef.current
-    if (!container) return
-
-    const resizeObserver = new ResizeObserver((entries) => {
-      const entry = entries[0]
-      if (entry) {
-        const newHeight = entry.contentRect.height
-        if (newHeight !== containerHeight) {
-          setContainerHeight(newHeight)
-        }
-      }
-    })
-
-    resizeObserver.observe(container)
-
-    return () => {
-      resizeObserver.disconnect()
-    }
-  }, [containerHeight])
+  const { containerRef, visibleRows, totalHeight, handleScroll } = useVirtualizedRows({
+    photos,
+    itemsPerRow,
+    rowHeight,
+    loadMoreThreshold,
+    isLoading,
+    onLoadMore,
+    onLoadPrevious,
+  })
 
   if (photos.length === 0 && !isLoading) {
     return (
