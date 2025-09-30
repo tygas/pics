@@ -41,6 +41,8 @@
     overflow-y: auto;
     overflow-x: hidden;
     position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .virtual-container {
@@ -54,6 +56,10 @@
     gap: 8px;
     padding: 4px;
     box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    right: 0;
+    overflow: hidden;
 }
 
 
@@ -62,18 +68,28 @@
     display: flex;
     border: 1px solid #000;
     flex-direction: column;
-
 }
 
 .virtual-photo-card:hover {
-    transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+.virtual-photo-card .photo-placeholder {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
 .virtual-photo-card .photo-img {
     width: 100%;
-    height: 200px; /* fixed row height */
+    height: 100%;
     object-fit: cover;
+    display: block;
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
 }
 
 .virtual-photo-card .photo-author {

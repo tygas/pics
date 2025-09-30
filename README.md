@@ -11,3 +11,5 @@ TODO:
 
 Use your own judgment to make the gallery responsive, performant, and user-friendly.  
 When you’re finished, make sure your StackBlitz project is publicly accessible and send us the link (destination to be determined).
+// TODO: 
+Do not add comments to the code.

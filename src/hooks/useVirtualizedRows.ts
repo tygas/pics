@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { RefObject, UIEvent } from 'react'
 import type { PhotoT } from '../api/picsum'
 import { useTrackElementHeight } from './useTrackElementHeight.ts'
+import { useItemsPerRow } from './useItemsPerRow'
 
 export interface VirtualRow {
   index: number
@@ -15,7 +16,6 @@ const BUFFER_ROWS = 1
 
 interface UseVirtualizedRowsArgs {
   photos: PhotoT[]
-  itemsPerRow: number
   rowHeight: number
   loadMoreThreshold: number
   isLoading: boolean
@@ -32,7 +32,6 @@ interface UseVirtualizedRowsReturn {
 
 export function useVirtualizedRows({
   photos,
-  itemsPerRow,
   rowHeight,
   loadMoreThreshold,
   isLoading,
@@ -41,6 +40,8 @@ export function useVirtualizedRows({
 }: UseVirtualizedRowsArgs): UseVirtualizedRowsReturn {
   const containerRef = useRef<HTMLDivElement>(null)
   const containerHeight = useTrackElementHeight(containerRef, DEFAULT_CONTAINER_HEIGHT)
+  const itemsPerRow = useItemsPerRow()
+
   const [scrollTop, setScrollTop] = useState(0)
   const [visibleRows, setVisibleRows] = useState<VirtualRow[]>([])
 

@@ -11,13 +11,11 @@ interface VirtualizedPhotoGridProps {
   onLoadPrevious: () => void
   isLoading: boolean
   loadMoreThreshold?: number
-  itemsPerRow?: number
   rowHeight?: number
 }
 
 const DEFAULT_LOAD_MORE_THRESHOLD = 800
-const DEFAULT_ITEMS_PER_ROW = 3
-const DEFAULT_ROW_HEIGHT = 250
+const DEFAULT_ROW_HEIGHT = 210
 
 export const VirtualizedPhotoGrid: React.FC<VirtualizedPhotoGridProps> = ({
   photos,
@@ -25,12 +23,10 @@ export const VirtualizedPhotoGrid: React.FC<VirtualizedPhotoGridProps> = ({
   onLoadPrevious,
   isLoading,
   loadMoreThreshold = DEFAULT_LOAD_MORE_THRESHOLD,
-  itemsPerRow = DEFAULT_ITEMS_PER_ROW,
   rowHeight = DEFAULT_ROW_HEIGHT,
 }) => {
   const { containerRef, visibleRows, totalHeight, handleScroll } = useVirtualizedRows({
     photos,
-    itemsPerRow,
     rowHeight,
     loadMoreThreshold,
     isLoading,
@@ -60,12 +56,8 @@ export const VirtualizedPhotoGrid: React.FC<VirtualizedPhotoGridProps> = ({
             key={row.index}
             className="virtual-row"
             style={{
-              position: 'absolute',
               top: row.top,
-              left: 0,
-              right: 0,
               height: rowHeight,
-              overflow: 'hidden',
             }}
             role="row"
           >
