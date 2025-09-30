@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { RefObject, UIEvent } from 'react'
 import type { PhotoT } from '../api/picsum'
 import { useTrackElementHeight } from './useTrackElementHeight.ts'
 import { useItemsPerRow } from './useItemsPerRow'
+import useDebouncedCallback from './useDebouncedCallback'
 
 export interface VirtualRow {
   index: number
@@ -31,8 +32,8 @@ interface UseVirtualizedRowsReturn {
 }
 
 export function useVirtualizedRows({
-  photos,
-  rowHeight,
+  photos = [],
+  rowHeight = 0,
   loadMoreThreshold,
   isLoading,
   onLoadMore,
@@ -48,56 +49,46 @@ export function useVirtualizedRows({
   const totalRows = Math.ceil(photos.length / itemsPerRow)
   const totalHeight = totalRows * rowHeight
 
-  const rows = useMemo(() => {
-    if (photos.length === 0) return [] as PhotoT[][]
-
-    const result: PhotoT[][] = []
-    for (let i = 0; i < photos.length; i += itemsPerRow) {
-      result.push(photos.slice(i, i + itemsPerRow))
-    }
-    return result
-  }, [photos, itemsPerRow])
-
+  // Only calculate visible rows (plus buffer) instead of all rows
   const calculateVisibleRows = useCallback(() => {
     if (totalRows === 0 || containerHeight === 0) {
       setVisibleRows([])
       return
     }
-
     const startRow = Math.floor(scrollTop / rowHeight)
     const endRow = Math.min(totalRows - 1, Math.ceil((scrollTop + containerHeight) / rowHeight))
-
     const bufferedStartRow = Math.max(0, startRow - BUFFER_ROWS)
     const bufferedEndRow = Math.min(totalRows - 1, endRow + BUFFER_ROWS)
-
     const newVisibleRows: VirtualRow[] = []
     for (let i = bufferedStartRow; i <= bufferedEndRow; i++) {
-      const rowPhotos = rows[i]
-      if (rowPhotos) {
+      const startIdx = i * itemsPerRow
+      const rowPhotos = photos.slice(startIdx, startIdx + itemsPerRow)
+      if (rowPhotos.length) {
         newVisibleRows.push({
           index: i,
           top: i * rowHeight,
           photos: rowPhotos,
-          startIndex: i * itemsPerRow,
+          startIndex: startIdx,
         })
       }
     }
-
     setVisibleRows(newVisibleRows)
-  }, [scrollTop, containerHeight, totalRows, rowHeight, rows, itemsPerRow])
+  }, [scrollTop, containerHeight, totalRows, rowHeight, itemsPerRow, photos])
 
   useEffect(() => {
     calculateVisibleRows()
   }, [calculateVisibleRows])
 
+  const debouncedSetScrollTop = useDebouncedCallback((newScrollTop) => {
+    setScrollTop(newScrollTop)
+  }, 30)
+
   const handleScroll = useCallback(
     (event: UIEvent<HTMLDivElement>) => {
       const target = event.currentTarget
       const newScrollTop = target.scrollTop
-
-      // Avoid redundant state updates
       if (newScrollTop !== scrollTop) {
-        setScrollTop(newScrollTop)
+        debouncedSetScrollTop(newScrollTop)
       }
 
       const { scrollHeight, clientHeight } = target
@@ -111,7 +102,7 @@ export function useVirtualizedRows({
         onLoadPrevious()
       }
     },
-    [scrollTop, loadMoreThreshold, isLoading, onLoadMore, onLoadPrevious]
+    [scrollTop, loadMoreThreshold, isLoading, onLoadMore, onLoadPrevious, debouncedSetScrollTop]
   )
 
   return { containerRef, visibleRows, totalHeight, handleScroll }

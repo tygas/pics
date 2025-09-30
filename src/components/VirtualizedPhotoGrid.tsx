@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { VirtualItem } from './VirtualItem'
 import { LoadingIndicator } from './LoadingIndicator'
 import './VirtualizedPhotoGrid.css'
 import type { PhotoT } from '../api/picsum'
-import { useVirtualizedRows } from '../hooks/useVirtualizedRows'
+import { useVirtualizedRows, type VirtualRow } from '../hooks/useVirtualizedRows'
 
 interface VirtualizedPhotoGridProps {
   photos: PhotoT[]
@@ -16,6 +16,25 @@ interface VirtualizedPhotoGridProps {
 
 const DEFAULT_LOAD_MORE_THRESHOLD = 800
 const DEFAULT_ROW_HEIGHT = 210
+
+const MemoVirtualItem = memo(VirtualItem)
+const MemoVirtualRow: React.FC<{ row: VirtualRow; rowHeight: number }> = memo(
+  ({ row, rowHeight }) => (
+    <div
+      key={row.index}
+      className="virtual-row"
+      style={{
+        top: row.top,
+        height: rowHeight,
+      }}
+      role="row"
+    >
+      {row.photos.map((photo: PhotoT, photoIndex: number) => (
+        <MemoVirtualItem key={photo.id} photo={photo} globalIndex={row.startIndex + photoIndex} />
+      ))}
+    </div>
+  )
+)
 
 export const VirtualizedPhotoGrid: React.FC<VirtualizedPhotoGridProps> = ({
   photos,
@@ -52,19 +71,7 @@ export const VirtualizedPhotoGrid: React.FC<VirtualizedPhotoGridProps> = ({
     >
       <div className="virtual-container" style={{ height: totalHeight }} role="presentation">
         {visibleRows.map((row) => (
-          <div
-            key={row.index}
-            className="virtual-row"
-            style={{
-              top: row.top,
-              height: rowHeight,
-            }}
-            role="row"
-          >
-            {row.photos.map((photo, photoIndex) => (
-              <VirtualItem key={photo.id} photo={photo} globalIndex={row.startIndex + photoIndex} />
-            ))}
-          </div>
+          <MemoVirtualRow key={row.index} row={row} rowHeight={rowHeight} />
         ))}
       </div>
 

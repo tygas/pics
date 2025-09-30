@@ -18,6 +18,7 @@ export const useVirtualizedPhotoGallery = (): UseVirtualizedPhotoGalleryReturn =
   const [totalPhotos, setTotalPhotos] = useState(0)
 
   const isLoadingRef = useRef(false)
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   const loadPage = useCallback(
     async (page: number, direction: 'append' | 'prepend' = 'append') => {
@@ -26,17 +27,23 @@ export const useVirtualizedPhotoGallery = (): UseVirtualizedPhotoGalleryReturn =
       isLoadingRef.current = true
       setIsLoading(true)
       setError(null)
-
+      abortControllerRef.current?.abort()
+      abortControllerRef.current = new AbortController()
       try {
-        const newPhotos = await fetchPhotos({ page, limit: PAGE_SIZE })
+        const newPhotos = await fetchPhotos({
+          page,
+          limit: PAGE_SIZE,
+          signal: abortControllerRef.current.signal,
+        })
         setPhotos((prevPhotos) =>
           direction === 'prepend' ? [...newPhotos, ...prevPhotos] : [...prevPhotos, ...newPhotos]
         )
-
         setLoadedPages((prev) => new Set([...prev, page]))
         setTotalPhotos((prev) => Math.max(prev, page * PAGE_SIZE))
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load photos')
+        if (!(err instanceof DOMException && err.name === 'AbortError')) {
+          setError(err instanceof Error ? err.message : 'Failed to load photos')
+        }
       } finally {
         setIsLoading(false)
         isLoadingRef.current = false
@@ -51,12 +58,15 @@ export const useVirtualizedPhotoGallery = (): UseVirtualizedPhotoGalleryReturn =
       await loadPage(2, 'append')
     }
     initializePages()
+    return () => abortControllerRef.current?.abort()
   }, [loadPage])
 
   const handleLoadMore = useCallback(() => {
     if (loadedPages.size > 0 && !isLoadingRef.current) {
       const nextPage = Math.max(...Array.from(loadedPages)) + 1
       loadPage(nextPage, 'append')
+      // Prefetch next-next page
+      setTimeout(() => loadPage(nextPage + 1, 'append'), 500)
     }
   }, [loadPage, loadedPages])
 
