@@ -6,6 +6,8 @@ export function useIntersectionVisible<T extends HTMLElement>(
   const ref = useRef<T>(null)
   const [isVisible, setIsVisible] = useState(false)
 
+  // this can optimize, but for demo purposes it's working real fast
+
   useEffect(() => {
     const node = ref.current
     if (!node) return
