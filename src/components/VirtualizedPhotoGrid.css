@@ -82,6 +82,7 @@
     top: 0;
     left: 0;
     z-index: 1;
+
 }
 .virtual-photo-card .photo-img {
     width: 100%;
@@ -91,6 +92,20 @@
     position: relative;
     z-index: 2;
     overflow: hidden;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+.virtual-photo-card .photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+
 }
 
 .virtual-photo-card .photo-author {

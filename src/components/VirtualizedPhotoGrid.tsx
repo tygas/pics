@@ -1,9 +1,10 @@
 import React, { memo } from 'react'
-import { VirtualItem } from './VirtualItem'
+import { PhotoCard } from './PhotoCard.tsx'
 import { LoadingIndicator } from './LoadingIndicator'
 import './VirtualizedPhotoGrid.css'
 import type { PhotoT } from '../api/picsum'
 import { useVirtualizedRows, type VirtualRow } from '../hooks/useVirtualizedRows'
+import { useIntersectionVisible } from '../hooks/useIntersectionVisible'
 
 interface VirtualizedPhotoGridProps {
   photos: PhotoT[]
@@ -17,23 +18,36 @@ interface VirtualizedPhotoGridProps {
 const DEFAULT_LOAD_MORE_THRESHOLD = 800
 const DEFAULT_ROW_HEIGHT = 210
 
-const MemoVirtualItem = memo(VirtualItem)
+const MemoVirtualItem = memo(PhotoCard)
 const MemoVirtualRow: React.FC<{ row: VirtualRow; rowHeight: number }> = memo(
-  ({ row, rowHeight }) => (
-    <div
-      key={row.index}
-      className="virtual-row"
-      style={{
-        top: row.top,
-        height: rowHeight,
-      }}
-      role="row"
-    >
-      {row.photos.map((photo: PhotoT, photoIndex: number) => (
-        <MemoVirtualItem key={photo.id} photo={photo} globalIndex={row.startIndex + photoIndex} />
-      ))}
-    </div>
-  )
+  ({ row, rowHeight }) => {
+    const [rowRef, isVisible] = useIntersectionVisible<HTMLDivElement>({
+      root: null,
+      rootMargin: '200px',
+      threshold: 0.01,
+    })
+    return (
+      <div
+        key={row.index}
+        className="virtual-row"
+        style={{
+          top: row.top,
+          height: rowHeight,
+        }}
+        role="row"
+        ref={rowRef}
+      >
+        {row.photos.map((photo: PhotoT, photoIndex: number) => (
+          <MemoVirtualItem
+            key={photo.id}
+            photo={photo}
+            globalIndex={row.startIndex + photoIndex}
+            isVisible={isVisible}
+          />
+        ))}
+      </div>
+    )
+  }
 )
 
 export const VirtualizedPhotoGrid: React.FC<VirtualizedPhotoGridProps> = ({
