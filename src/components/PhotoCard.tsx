@@ -18,15 +18,16 @@ export const PhotoCard: React.FC<VirtualItemProps> = ({ photo, globalIndex, isVi
 
   return (
     <div className="virtual-photo-card" style={{ width: displayWidth, height: DISPLAY_HEIGHT }}>
-      {!isLoaded && <div className="photo-placeholder" />}
-      <img
-        src={isVisible ? photo.download_url : undefined}
-        alt={`Photo by ${photo.author || 'Unknown Author'}`}
-        loading={globalIndex < PAGE_SIZE ? 'eager' : 'lazy'}
-        className="photo-img"
-        onLoad={() => setIsLoaded(true)}
-        style={{ visibility: isVisible ? 'visible' : 'hidden' }}
-      />
+      {(!isLoaded || !isVisible) && <div className="photo-placeholder" />}
+      {isVisible && (
+        <img
+          src={photo.download_url}
+          alt={`Photo by ${photo.author || 'Unknown Author'}`}
+          loading={globalIndex < PAGE_SIZE ? 'eager' : 'lazy'}
+          className="photo-img"
+          onLoad={() => setIsLoaded(true)}
+        />
+      )}
       <div className="photo-author">{photo.author}</div>
     </div>
   )
