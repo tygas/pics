@@ -1,22 +1,21 @@
-/* Virtualized Gallery Styles */
 .virtualized-gallery {
-    width: 100%;
     height: 100vh;
     overflow: hidden;
+    width: 100%;
 }
 
 .virtualized-gallery-wrapper {
-    width: 100%;
     height: 100vh;
+    width: 100%;
 }
 
 .scroll-container {
-    width: 100%;
     height: 100%;
     overflow: auto;
     scroll-behavior: smooth;
-    scrollbar-width: thin;
     scrollbar-color: #bbb transparent;
+    scrollbar-width: thin;
+    width: 100%;
 }
 
 .scroll-container::-webkit-scrollbar {
@@ -38,11 +37,11 @@
 
 .virtualized-photo-grid {
     height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    position: relative;
-    max-width: 1200px;
     margin: 0 auto;
+    max-width: 1200px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
 }
 
 .virtual-container {
@@ -51,23 +50,22 @@
 }
 
 .virtual-row {
-    display: flex;
-    width: 100%;
-    gap: 8px;
-    padding: 4px;
     box-sizing: border-box;
-    position: absolute;
+    display: flex;
+    gap: 8px;
     left: 0;
-    right: 0;
     overflow: hidden;
+    padding: 4px;
+    position: absolute;
+    right: 0;
+    width: 100%;
     will-change: transform;
 }
 
-
 .virtual-photo-card {
-    flex: 1 1 auto;
-    display: flex;
     border: 1px solid #000;
+    display: flex;
+    flex: 1 1 auto;
     flex-direction: column;
 }
 
@@ -76,77 +74,65 @@
 }
 
 .virtual-photo-card .photo-placeholder {
-    width: 100%;
     height: 100%;
+    left: 0;
     position: absolute;
     top: 0;
-    left: 0;
-    z-index: 1;
-
-}
-.virtual-photo-card .photo-img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    position: relative;
-    z-index: 2;
-    overflow: hidden;
+    z-index: 1;
+}
+
+.virtual-photo-card .photo-img {
+    animation: loading 1.5s infinite;
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
     background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-}
-
-.virtual-photo-card .photo-img {
-    width: 100%;
+    display: block;
     height: 100%;
     object-fit: cover;
-    display: block;
-    position: relative;
-    z-index: 2;
     overflow: hidden;
-
+    position: relative;
+    width: 100%;
+    z-index: 2;
 }
 
 .virtual-photo-card .photo-author {
-    padding: 4px 12px;
-    font-size: 0.9rem;
-    color: #666;
+    align-items: center;
     background: #fafafa;
     border-top: 1px solid #000;
-    flex: 1;
+    color: #666;
     display: flex;
-    align-items: center;
+    flex: 1;
+    font-size: 0.9rem;
+    padding: 4px 12px;
 }
 
 .loading-container {
-    position: absolute;
     bottom: 20px;
     left: 50%;
+    position: absolute;
     transform: translateX(-50%);
     z-index: 10;
 }
 
 .loading-indicator {
+    align-items: center;
+    color: #666;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    color: #666;
     left: 50%;
+    padding: 20px;
     position: absolute;
     transform: translateX(-50%);
-
 }
 
 .loading-spinner {
-    width: 30px;
-    height: 30px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #3498db;
-    border-radius: 50%;
     animation: spin 1s linear infinite;
+    border: 3px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 3px solid #3498db;
+    height: 30px;
     margin-bottom: 10px;
+    width: 30px;
 }
 
 @keyframes spin {
@@ -159,9 +145,9 @@
 }
 
 .virtual-photo-card .photo-img.skeleton {
+    animation: loading 1.5s infinite;
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
     background-size: 200% 100%;
-    animation: loading 1.5s infinite;
 }
 
 @keyframes loading {
